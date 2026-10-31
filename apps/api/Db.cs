@@ -10,7 +10,15 @@ namespace Api;
 public sealed class Db
 {
     private static readonly string[] Schema = [
-        // "CREATE TABLE IF NOT EXISTS items (id serial PRIMARY KEY, name text NOT NULL)",
+        """
+        CREATE TABLE IF NOT EXISTS bookmarks (
+            id serial PRIMARY KEY,
+            title text NOT NULL,
+            url text NOT NULL,
+            tags text[] NOT NULL DEFAULT '{}',
+            created_at timestamptz NOT NULL DEFAULT now()
+        )
+        """,
     ];
 
     private readonly NpgsqlDataSource? _source;
@@ -58,6 +66,7 @@ public sealed class Db
             await new NpgsqlCommand("SELECT pg_advisory_xact_lock(727274)", conn, tx).ExecuteNonQueryAsync();
             foreach (var statement in Schema)
                 await new NpgsqlCommand(statement, conn, tx).ExecuteNonQueryAsync();
+            await BookmarkSeed.ApplyAsync(conn, tx);
             await tx.CommitAsync();
         }
         catch
