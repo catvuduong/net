@@ -1,0 +1,16 @@
+{
+  "name": "net",
+  "private": true,
+  "workspaces": ["apps/web"],
+  "scripts": {
+    "lint": "npm run lint --workspace web",
+    "test": "dotnet test apps/api.tests/Api.Tests.csproj --nologo",
+    "build": "dotnet build apps/api/Api.csproj -c Release --nologo -warnaserror && npm run build --workspace web",
+    "start:api": "ASPNETCORE_URLS=http://localhost:3001 dotnet apps/api/bin/Release/net8.0/Api.dll",
+    "e2e": "playwright test",
+    "verify": "npm run lint && npm run test && npm run build && npm run e2e"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.50.0"
+  }
+}
