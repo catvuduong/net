@@ -18,8 +18,9 @@ builder.Services.AddCors(options => options.AddDefaultPolicy(policy =>
 var app = builder.Build();
 app.UseCors();
 
-app.MapGet("/", () => Results.Text("net API (ASP.NET Core). Endpoints: GET /health"));
+app.MapGet("/", () => Results.Text("net API (ASP.NET Core). Endpoints: GET /health, GET /bookmarks, POST /bookmarks, DELETE /bookmarks/{id}, GET /tags"));
 app.MapGet("/health", async (Db db) => Results.Ok(new { status = "ok", db = await db.StatusAsync() }));
+app.MapBookmarks();
 
 app.Run();
 
